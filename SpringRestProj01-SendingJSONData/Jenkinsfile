@@ -7,25 +7,25 @@ pipeline{
         stage('Build Maven Project'){
             steps{
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/snazeergit/DevOpsIntegration']]])
-                shell 'mvn clean install'
+                 sh "mvn -f C:/ProgramData/Jenkins/.jenkins/workspace/DevOps-Automation-1/SpringRestProj01-SendingJSONData/pom.xml clean install"
             }
         }
-        stage("Build Docker Image"){
+        stage('Build Docker Image'){
             steps{
                 script{
-                    shell 'docker build -t nazeerdocker/DevOps-Automation-1 .'
+                 sh "docker build -t nazeerdocker/devops-automation-1 C:/ProgramData/Jenkins/.jenkins/workspace/DevOps-Automation-1/SpringRestProj01-SendingJSONData"
                 }
             }
         }
-        stage("Push Docker Image to DockerHub"){
+        stage('Push Docker Image to DockerHub'){
             steps{
                 script{
                     withCredentials([string(credentialsId: 'dockerhubpwd', variable: 'dockerhubpwd')]) {
                         shell 'docker login -u nazeerdocker -p${dockerhubpwd}'
                     }
-                    shell 'docker push nazeerdocker/DevOps-Automation-1'
+                    sh 'docker push nazeerdocker/devops-automation-1'
                 }
             }
         }
     }
-} 
+}
